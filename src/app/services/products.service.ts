@@ -11,7 +11,7 @@ import {
   Product,
   UpdateProductDTO,
 } from './../models/product.model';
-import { catchError, retry, throwError } from 'rxjs';
+import { catchError, map, retry, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -28,9 +28,16 @@ export class ProductsService {
       params = params.set('limit', limit);
       params = params.set('offset', limit);
     }
-    return this.http.get<Product[]>(this.apiUrl).pipe(retry(3));
-
-    //return this.http.get<Product[]>('https://fakestoreapi.com/products');
+    return this.http.get<Product[]>(this.apiUrl, { params })
+    .pipe(
+      retry(3),
+      map(products => products.map(item => {
+        return {
+          ...item,
+          taxes: .19 * item.price
+        };
+      }))
+    );
   }
 
   getProduct(id: string) {
