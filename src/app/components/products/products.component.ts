@@ -72,7 +72,7 @@ export class ProductsComponent implements OnInit {
       }
     );
   }
-
+  
   createNewProduct() {
     const newProduct: CreateProductDTO = {
       title: 'New Product',
