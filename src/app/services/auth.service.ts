@@ -4,7 +4,8 @@ import { environment } from 'src/environments/environment';
 import { Auth } from '../models/auth.model';
 import { User } from '../models/user.model';
 import { AuthResponse } from '../models/authResponse.model';
-import { switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +13,17 @@ import { switchMap } from 'rxjs';
 export class AuthService {
   private apiUrl = `${environment.API_URL}/api/auth`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private tokenService: TokenService
+  ) {}
 
   login(email: string, password: string) {
-    return this.http.post<Auth>(`${this.apiUrl}/login`, { email, password });
+    return this.http.post<Auth>(`${this.apiUrl}/login`, { email, password })
+    .pipe(
+      tap(rta => {
+        this.tokenService.saveToken(rta.access_token);
+      }
+    ));
   }
 
     loginAndGet(email: string, password: string) {
