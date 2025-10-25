@@ -6,8 +6,6 @@ import { UsersService } from 'src/app/services/users.service';
 import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 
-import Swal from 'sweetalert2';
-
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
@@ -40,13 +38,13 @@ export class NavComponent implements OnInit {
       next: (user) => {
         this.profile = user;
         this.token = user.email;//user.token;
-        Swal.fire('Bienvenido', 'Inicio de sesión exitoso', 'success');
+        alert('Bienvenido - Inicio de sesión exitoso');
       },
       error: (err) => {
         if (err.status === 401) {
-          Swal.fire('Error', 'Credenciales incorrectas', 'error');
+          alert('Error: Credenciales incorrectas');
         } else {
-          Swal.fire('Error', 'No se pudo conectar al servidor', 'error');
+          alert('Error: No se pudo conectar al servidor');
         }
       },
     });

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
 import { User } from './models/user.model';
+import { FilesService } from './services/files.service';
 
 @Component({
   selector: 'app-root',
@@ -13,15 +14,17 @@ export class AppComponent {
   imgParent = '';
   showImg = true;
   token = '';
+  imgUrl = '';
 
   constructor(
     private authService: AuthService,
-    private userService: UsersService
+    private userService: UsersService,
+    private filesService: FilesService
   ) {}
 
-  onLoaded(img: string) {
-    console.log('log padre', img);
-  }
+  // onLoaded(img: string) {
+  //   console.log('log padre', img);
+  // }
 
   toggleImg() {
     this.showImg = !this.showImg;
@@ -44,4 +47,21 @@ export class AppComponent {
       console.log(rta);
     });
   }
+
+  downloadPDF(){
+    this.filesService.downloadFile('myFile.pdf','https://young-sands-07814.herokuapp.com/api/files/dummy.pdf','application/pdf')
+    .subscribe();
+  }
+
+  onLoaded(event: Event){ 
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.item(0);
+    if(file){
+    this.filesService.uploadFile(new Blob(['Hola mundo'], { type: 'text/plain' }))
+    .subscribe(rta => {
+      this.imgUrl = rta.location;
+    });
+    }
+
+  } 
 }
